@@ -1,0 +1,10 @@
+infile
+LIB_C
+main.c
+main.o
+Makefile
+outfile
+outfile2
+pipex
+pipex.h
+test
