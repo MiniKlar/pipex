@@ -10,6 +10,9 @@ LIB_C_GIT_URL 	= git@github.com:MiniKlar/LIB_C.git
 LIB_C			= LIB_C
 
 SRC 			= ./main.c \
+				./utils.c \
+				./free.c \
+				./pipex.c \
 
 OBJ 			= $(SRC:.c=.o)
 
