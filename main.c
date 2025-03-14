@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miniklar <miniklar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 15:43:51 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/05 06:56:16 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/14 13:39:13 by miniklar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+void free_tab(char **tab);
+char *find_env(void);
 char *check_command_path(char *command);
 
 int main(int argc, char **argv)
@@ -37,13 +39,17 @@ int main(int argc, char **argv)
 	new_pathcommand_2 = check_command_path(command_arg_2[0]);
 	pipe(fdpipe);
 	fd = open(argv[1], O_RDWR);
+	printf("\n\n%s |||||| %s\n\n", new_pathcommand, new_pathcommand_2);
 	if (access(new_pathcommand, F_OK) == 0)
 	{
 		printf("Delete previous outfile\n");
 		unlink(argv[argc - 1]);
 	}
 	else
+	{
+		printf("TU ES sorti\n");
 		exit(EXIT_FAILURE);
+	}
 	out_fd = open(argv[argc - 1], O_CREAT | O_RDWR, 0755);
 	id_fork = fork();
 	if (id_fork == 0)
@@ -82,53 +88,74 @@ int main(int argc, char **argv)
 			close(fdpipe[0]);
 			close(out_fd);
 			close(fd);
+			free(new_pathcommand);
+			free(new_pathcommand_2);
+			free_tab(command_arg);
+			free_tab(command_arg_2);
 		}
 	}
 }
 
 char *check_command_path(char *command)
 {
+	int i;
+	char *new_command;
 	char *new_command_path;
 	char **env;
+	char *tmp;
 
-	env = ft_split(ENVIRON, ' ');
+	i = 0;
+	new_command = ft_strjoin("/", command);
+	env = ft_split(find_env(), ':');
 	new_command_path = NULL;
 
 	while (env[i])
-	if (access())
-	// //printf("%s\n\n", command);
-	// if (ft_strnstr(command, "/usr/bin/", ft_strlen(command)) != NULL)
-	// {
-	// 	//printf("PATHNAME COMPLET\n");
-	// 	return (command);
-	// }
-	// else if ((ft_strnstr(command, "bin/", ft_strlen(command)) != NULL) && command[0] == 'b')
-	// {
-	// 	//printf("HERE 1\n");
-	// 	new_command_path = ft_strjoin("/usr/", command);
-	// }
-	// else if ((ft_strnstr(command, "/bin/", ft_strlen(command)) != NULL) && command[0] == '/')
-	// {
-	// 	//printf("HERE 2\n");
-	// 	new_command_path = ft_strjoin("/usr", command);
-	// }
-	// else if ((ft_strnstr(command, "usr/bin/", ft_strlen(command)) != NULL) && command[0] == 'u')
-	// {
-	// 	//printf("HERE 3\n");
-	// 	new_command_path = ft_strjoin("/", command);
-	// }
-	// else if ((ft_strnstr(command, "/", ft_strlen(command)) != NULL) && (ft_strnstr(command, "bin", 3) == NULL))
-	// {
-	// 	//printf("HERE 4\n");
-	// 	new_command_path = ft_strjoin("/usr/bin", command);
-	// }
-	// else
-	// {
-	// 	//printf("HERE 5\n");
-	// 	new_command_path = ft_strjoin("/usr/bin/", command);
-	// }
-	// //printf("VOICI LE COMMAND PATH = %s\n\n", new_command_path);
-	// return (new_command_path);
-
+	{
+		tmp = ft_strjoin(env[i], new_command);
+		if (access(tmp, F_OK) == 0)
+		{
+			new_command_path = ft_strtrim(tmp, "PATH=");
+			printf("env[%d]%s\n", i, tmp);
+			return (free(new_command), free_tab(env), free(tmp), new_command_path);
+		}
+		else
+		{
+			free(tmp);
+			i++;
+		}
+	}
+	return (NULL);
 }
 
+char *find_env(void)
+{
+	int i;
+	char *env;
+
+	i = 0;
+	while (ENVIRON[i] != NULL)
+	{
+		if (ft_strnstr(ENVIRON[i], "PATH=", 5) != 0)
+		{
+			env = ENVIRON[i];
+			printf("%s\n", env);
+			return (env);
+		}
+		else
+			i++;
+	}
+	return (NULL);
+}
+
+void free_tab(char **tab)
+{
+	int i;
+
+	i = 0;
+	while (tab[i] != 0)
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}
