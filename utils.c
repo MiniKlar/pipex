@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:24:46 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/14 21:08:20 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/14 23:43:35 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ char	*check_command_path(char *command)
 	while (env[i])
 	{
 		tmp = ft_strjoin(env[i], new_command);
+		//printf("%s\n\n", tmp);
 		if (access(tmp, F_OK) == 0)
 		{
 			command_path = ft_strtrim(tmp, "PATH=");
@@ -53,7 +54,7 @@ char	*check_command_path(char *command)
 			free(tmp);
 		i++;
 	}
-	return (NULL);
+	return (command);
 }
 
 char	*find_env(void)

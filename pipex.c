@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:51:50 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/14 21:08:14 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/14 23:43:48 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	fork_pipex(t_data *data)
 	data->id_fork = fork();
 	if (data->id_fork == 0)
 	{
+		//printf("%s\n\n", data->new_pathcommand);
 		dup2(data->fd, 0);
 		dup2(data->fdpipe[1], 1);
 		if (execve(data->new_pathcommand, &data->command_arg[0], ENVIRON) == -1)
@@ -33,8 +34,8 @@ void	fork_pipex(t_data *data)
 			fork_pipex2(data);
 		else
 		{
-			waitpid(data->id_fork, NULL, 0);
-			waitpid(data->id_fork2, NULL, 0);
+			waitpid(data->id_fork, NULL, WNOHANG);
+			waitpid(data->id_fork2, NULL, WNOHANG);
 			free_close(data);
 		}
 	}
