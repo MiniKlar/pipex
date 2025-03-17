@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 15:43:58 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/14 21:08:58 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/17 15:09:32 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,8 @@ void	free_tab(char **tab);
 char	*check_command_path(char *command);
 char	*find_env(void);
 void	fork_pipex(t_data *data);
+void	fork_pipex1(t_data *data);
 void	fork_pipex2(t_data *data);
+void	pipex(int argc, char **argv);
+void	fork_error(int nb_fork, t_data *data);
 #endif

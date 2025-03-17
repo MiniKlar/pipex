@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:15:04 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/14 23:20:00 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/17 15:08:05 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,24 @@ void	free_close(t_data *data)
 	free_tab(data->command_arg);
 	free_tab(data->command_arg_2);
 	free(data);
+}
+
+void fork_error(int nb_fork, t_data *data)
+{
+	if (nb_fork == 1)
+	{
+	if (data->id_fork == -1)
+	{
+		perror("1st Fork failed");
+		exit(EXIT_FAILURE);
+	}
+	}
+	else
+	{
+		if (data->id_fork2 == -1)
+		{
+			perror("2st Fork failed");
+			exit(EXIT_FAILURE);
+		}
+	}
 }
