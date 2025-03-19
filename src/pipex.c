@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:51:50 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/19 05:11:45 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/19 05:54:02 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,12 @@ int	fork_pipex1(t_data *data, char **envp)
 	char	*command_path;
 
 	command_path = check_command_path(data->command_arg[0], envp);
+	if (!command_path)
+	{
+		free_close(data), exit(1); // bien checker si le path est null pour ne pas rentrer dans execve
+	}
+	write(1, command_path, ft_strlen(command_path));
+	write(1, "\n", 1);
 	close(data->fdpipe[0]);
 	dup2(data->fd, 0);
 	dup2(data->fdpipe[1], 1);
@@ -87,6 +93,12 @@ int	fork_pipex2(t_data *data, char **envp)
 	char	*command_path;
 
 	command_path = check_command_path(data->command_arg_2[0], envp);
+	if (!command_path)
+	{
+		free_close(data), exit(1); // bien checker si le path est null pour ne pas rentrer dans execve
+	}
+	write(1, command_path, ft_strlen(command_path));
+	write(1, "\n", 1);
 	close(data->fdpipe[1]);
 	dup2(data->fdpipe[0], 0);
 	dup2(data->out_fd, 1);

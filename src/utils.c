@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:24:46 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/19 05:08:13 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/19 05:50:34 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ char	*new_command_function(char **path, char *new_command)
 		i++;
 	}
 	free_tab(path);
-	return (new_command);
+	free(new_command);
+	return (NULL);
 }
 
 char	*recup_env(char **envp)
