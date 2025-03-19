@@ -6,11 +6,11 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:15:04 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/17 23:47:57 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/19 02:51:42 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "../includes/pipex.h"
 
 void	free_tab(char **tab)
 {
@@ -27,8 +27,6 @@ void	free_tab(char **tab)
 
 void	free_close(t_data *data)
 {
-	// close(data->fdpipe[0]);
-	// close(data->fdpipe[1]);
 	close(data->out_fd);
 	close(data->fd);
 	free_tab(data->command_arg);
@@ -36,7 +34,7 @@ void	free_close(t_data *data)
 	free(data);
 }
 
-void fork_error(int nb_fork, t_data *data)
+void	fork_error(int nb_fork, t_data *data)
 {
 	if (nb_fork == 1)
 	{

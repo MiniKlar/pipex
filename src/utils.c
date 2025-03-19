@@ -6,11 +6,11 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:24:46 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/18 00:13:29 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/19 05:08:13 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "../includes/pipex.h"
 
 t_data	*initialise_data(void)
 {
@@ -30,71 +30,50 @@ t_data	*initialise_data(void)
 
 char	*check_command_path(char *command, char **envp)
 {
-	int		i;
+	char	**path_tab;
 	char	*new_command;
-	char	**new_env;
-	char	*command_path;
-	char	*tmp;
+	char	*path;
 
-	if (!command)
+	if (!command || !envp[0])
 		return (NULL);
-	i = 0;
-	new_env = ft_split(decoup_env(envp), ':');
+	if (access(command, F_OK | X_OK) == 0)
+		return (command);
+	path = recup_env(envp);
+	path_tab = ft_split(path, ':');
 	new_command = ft_strjoin("/", command);
-	while (new_env[i])
-	{
-		tmp = ft_strjoin(new_env[i], new_command);
-		if (access(tmp, F_OK) == 0)
-		{
-			command_path = ft_strtrim(tmp, "PATH=");
-			return (free(new_command), free(tmp), command_path);
-		}
-		else
-			free(tmp);
-		i++;
-	}
-	tmp = ft_strtrim(new_command, "/");
-	return (free(new_command), tmp);
+	free(path);
+	return (new_command_function(path_tab, new_command));
 }
 
-char *decoup_env(char **envp)
+char	*new_command_function(char **path, char *new_command)
 {
 	int		i;
-	char	*tmp;
-	char	*new_envp;
+	char	*command_path;
 
 	i = 0;
-	tmp = NULL;
-	new_envp = ft_strdup("");
-	while (envp[i] != 0)
+	while (path[i])
 	{
-		if (new_envp == NULL)
-			new_envp = ft_strjoin("", envp[i]);
+		command_path = ft_strjoin(path[i], new_command);
+		if (access(command_path, F_OK) == 0)
+			return (command_path);
 		else
-			tmp = ft_strjoin(new_envp, envp[i]);
-		free(new_envp);
-		new_envp = ft_strjoin(tmp, ":");
-		free(tmp);
+			free(command_path);
 		i++;
 	}
-	return (new_envp);
+	free_tab(path);
+	return (new_command);
 }
 
-// char	*find_env(void)
-// {
-// 	int		i;
-// 	char	*env;
+char	*recup_env(char **envp)
+{
+	char	*path;
+	int		i;
 
-// 	i = 0;
-// 	while (ENVIRON[i] != NULL)
-// 	{
-// 		if (ft_strnstr(ENVIRON[i], "PATH=", 5) != 0)
-// 		{
-// 			env = ENVIRON[i];
-// 			return (env);
-// 		}
-// 		else
-// 			i++;
-// 	}
-// 	return (NULL);
-// }
+	i = 0;
+	if (!envp)
+		return (NULL);
+	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
+		i++;
+	path = ft_strtrim(envp[i], "PATH=");
+	return (path);
+}

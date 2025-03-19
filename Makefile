@@ -9,10 +9,10 @@ CFLAGS 			= -Wall -Wextra -Werror -ggdb
 LIB_C_GIT_URL 	= git@github.com:MiniKlar/LIB_C.git
 LIB_C			= LIB_C
 
-SRC 			= ./main.c \
-				./utils.c \
-				./free.c \
-				./pipex.c \
+SRC 			= ./src/main.c \
+				./src/utils.c \
+				./src/free.c \
+				./src/pipex.c \
 
 OBJ 			= $(SRC:.c=.o)
 
