@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:15:04 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/19 02:51:42 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/22 18:53:47 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ void	free_tab(char **tab)
 
 void	free_close(t_data *data)
 {
-	close(data->out_fd);
-	close(data->fd);
+	close(data->fdpipe[0]);
+	close(data->fdpipe[1]);
 	free_tab(data->command_arg);
 	free_tab(data->command_arg_2);
 	free(data);

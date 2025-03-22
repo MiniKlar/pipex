@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:24:46 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/19 05:50:34 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/22 19:05:24 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ t_data	*initialise_data(void)
 		return (NULL);
 	data->command_arg = NULL;
 	data->command_arg_2 = NULL;
-	data->fd = 0;
-	data->out_fd = 0;
 	data->id_fork = 0;
 	data->id_fork2 = 0;
 	return (data);
@@ -73,6 +71,12 @@ char	*recup_env(char **envp)
 	i = 0;
 	if (!envp)
 		return (NULL);
+	while (envp[i])
+	{
+		printf("VOICI ENVP %s\n\n", envp[i]);
+		i++;
+	}
+	i = 0;
 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
 		i++;
 	path = ft_strtrim(envp[i], "PATH=");
