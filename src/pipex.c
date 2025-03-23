@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miniklar <miniklar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:51:50 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/22 18:55:22 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/23 17:50:08 by miniklar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,30 +52,22 @@ int	fork_pipex(t_data *data, char **argv, int argc, char **envp)
 void	fork_pipex1(t_data *data, char **argv, char **envp)
 {
 	char	*command_path;
-	int fd;
+	int		fd;
 
-	if (access(argv[1], F_OK | R_OK) != 0)
-	{
-		perror("File not accessible");
-		exit(EXIT_FAILURE);
-	}
-	fd = open(argv[1], O_RDWR);
-	if (fd == -1)
-	{
-		perror("Cannot open file");
-		free_close(data), exit(1);
-	}
+	fd = open_access_infile(data, argv[1]);
 	command_path = check_command_path(data->command_arg[0], envp);
 	if (!command_path)
-		printf("LOL\n\n"), free_close(data), close(fd), exit(1); // bien checker si le path est null pour ne pas rentrer dans execve
+	{
+		perror("command not found");
+		free_close(data);
+		close(fd);
+		exit(1);
+	}
 	close(data->fdpipe[0]);
 	dup2(fd, 0);
 	dup2(data->fdpipe[1], 1);
 	if (execve(command_path, &data->command_arg[0], envp) == -1)
-	{
-		perror("execve failed: command not found");
 		exit(127);
-	}
 }
 
 void	fork_pipex2(t_data *data, char **argv, int argc, char **envp)
@@ -87,17 +79,22 @@ void	fork_pipex2(t_data *data, char **argv, int argc, char **envp)
 		unlink(argv[argc - 1]);
 	fd = open(argv[argc - 1], O_CREAT | O_RDWR, 0755);
 	if (fd == -1)
-		free(data), exit (1);
+	{
+		free(data);
+		exit (1);
+	}
 	command_path = check_command_path(data->command_arg_2[0], envp);
 	if (!command_path)
-		printf("LOL222\n\n"), free_close(data), close(fd), exit(1); // bien checker si le path est null pour ne pas rentrer dans execve
+	{
+		perror("command not found");
+		free_close(data);
+		close(fd);
+		exit(127);
+	}
 	dup2(data->fdpipe[0], 0);
 	dup2(fd, 1);
 	if (execve(command_path, &data->command_arg_2[0], envp) == -1)
-	{
-		perror("execve failed: command not found");
 		exit(127);
-	}
 }
 
 int	ft_wait(t_data *data, int wstatus)

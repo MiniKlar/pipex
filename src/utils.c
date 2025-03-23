@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
+/*   By: miniklar <miniklar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:24:46 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/22 19:05:24 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/23 17:42:28 by miniklar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ char	*check_command_path(char *command, char **envp)
 	if (access(command, F_OK | X_OK) == 0)
 		return (command);
 	path = recup_env(envp);
+	if (!path)
+		return (NULL);
 	path_tab = ft_split(path, ':');
 	new_command = ft_strjoin("/", command);
 	free(path);
@@ -73,12 +75,33 @@ char	*recup_env(char **envp)
 		return (NULL);
 	while (envp[i])
 	{
-		printf("VOICI ENVP %s\n\n", envp[i]);
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+		{
+			return (ft_strtrim(envp[i], "PATH="));
+		}
+		else
+			path = NULL;
 		i++;
 	}
-	i = 0;
-	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
-		i++;
-	path = ft_strtrim(envp[i], "PATH=");
 	return (path);
+}
+
+int	open_access_infile(t_data *data, char *argv)
+{
+	int	fd;
+
+	if (access(argv, F_OK | R_OK) != 0)
+	{
+		perror("File not accessible");
+		free_close(data);
+		exit(EXIT_FAILURE);
+	}
+	fd = open(argv, O_RDWR);
+	if (fd == -1)
+	{
+		perror("Cannot open file");
+		free_close(data);
+		exit(EXIT_FAILURE);
+	}
+	return (fd);
 }
