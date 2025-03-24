@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miniklar <miniklar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:51:50 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/23 17:50:08 by miniklar         ###   ########.fr       */
+/*   Updated: 2025/03/24 22:22:45 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,12 @@ int	pipex(int argc, char **argv, char **envp)
 	data = initialise_data();
 	data->command_arg = ft_split(argv[2], ' ');
 	data->command_arg_2 = ft_split(argv[3], ' ');
-	pipe(data->fdpipe);
+	if (pipe(data->fdpipe) == -1)
+	{
+		free(data->command_arg);
+		free(data->command_arg_2);
+		free(data);
+	}
 	return (fork_pipex(data, argv, argc, envp));
 }
 
@@ -58,7 +63,7 @@ void	fork_pipex1(t_data *data, char **argv, char **envp)
 	command_path = check_command_path(data->command_arg[0], envp);
 	if (!command_path)
 	{
-		perror("command not found");
+		ft_printf("command not found\n");
 		free_close(data);
 		close(fd);
 		exit(1);
@@ -66,8 +71,14 @@ void	fork_pipex1(t_data *data, char **argv, char **envp)
 	close(data->fdpipe[0]);
 	dup2(fd, 0);
 	dup2(data->fdpipe[1], 1);
+	close(fd);
+	close(data->fdpipe[1]);
 	if (execve(command_path, &data->command_arg[0], envp) == -1)
+	{
+		free_close(data);
+		close(fd);
 		exit(127);
+	}
 }
 
 void	fork_pipex2(t_data *data, char **argv, int argc, char **envp)
@@ -75,26 +86,25 @@ void	fork_pipex2(t_data *data, char **argv, int argc, char **envp)
 	char	*command_path;
 	int		fd;
 
-	if (access(argv[argc - 1], F_OK | W_OK) == 0)
-		unlink(argv[argc - 1]);
-	fd = open(argv[argc - 1], O_CREAT | O_RDWR, 0755);
-	if (fd == -1)
-	{
-		free(data);
-		exit (1);
-	}
+	fd = open_access_outfile(data, argv[argc -1]);
 	command_path = check_command_path(data->command_arg_2[0], envp);
 	if (!command_path)
 	{
-		perror("command not found");
+		ft_printf("command not found\n");
 		free_close(data);
 		close(fd);
 		exit(127);
 	}
 	dup2(data->fdpipe[0], 0);
 	dup2(fd, 1);
+	close(data->fdpipe[0]);
+	close(fd);
 	if (execve(command_path, &data->command_arg_2[0], envp) == -1)
+	{
+		free_close(data);
+		close(fd);
 		exit(127);
+	}
 }
 
 int	ft_wait(t_data *data, int wstatus)

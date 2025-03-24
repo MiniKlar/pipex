@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miniklar <miniklar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 15:43:58 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/23 17:40:59 by miniklar         ###   ########.fr       */
+/*   Updated: 2025/03/24 20:31:18 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ int		pipex(int argc, char **argv, char **envp);
 void	fork_error(int nb_fork, t_data *data);
 int		ft_wait(t_data *data, int wstatus);
 int		open_access_infile(t_data *data, char *argv);
+int		open_access_outfile(t_data *data, char *argv);
 
 #endif

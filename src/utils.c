@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miniklar <miniklar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:24:46 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/23 17:42:28 by miniklar         ###   ########.fr       */
+/*   Updated: 2025/03/24 21:07:29 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ char	*check_command_path(char *command, char **envp)
 		return (NULL);
 	if (access(command, F_OK | X_OK) == 0)
 		return (command);
+	if (ft_strchr(command, '/') != NULL && access(command, F_OK | X_OK) != 0)
+		return (NULL);
 	path = recup_env(envp);
 	if (!path)
 		return (NULL);
@@ -55,7 +57,9 @@ char	*new_command_function(char **path, char *new_command)
 	{
 		command_path = ft_strjoin(path[i], new_command);
 		if (access(command_path, F_OK) == 0)
+		{
 			return (command_path);
+		}
 		else
 			free(command_path);
 		i++;
