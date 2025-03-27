@@ -6,7 +6,7 @@
 /*   By: lomont <lomont@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 20:24:46 by lomont            #+#    #+#             */
-/*   Updated: 2025/03/24 21:07:29 by lomont           ###   ########.fr       */
+/*   Updated: 2025/03/27 13:14:43 by lomont           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,7 @@ char	*new_command_function(char **path, char *new_command)
 	{
 		command_path = ft_strjoin(path[i], new_command);
 		if (access(command_path, F_OK) == 0)
-		{
 			return (command_path);
-		}
 		else
 			free(command_path);
 		i++;
@@ -94,9 +92,15 @@ int	open_access_infile(t_data *data, char *argv)
 {
 	int	fd;
 
-	if (access(argv, F_OK | R_OK) != 0)
+	if (access(argv, F_OK) != 0)
 	{
 		perror("File not accessible");
+		free_close(data);
+		exit(EXIT_FAILURE);
+	}
+	else if (access(argv, R_OK) != 0)
+	{
+		perror("File not readable");
 		free_close(data);
 		exit(EXIT_FAILURE);
 	}
